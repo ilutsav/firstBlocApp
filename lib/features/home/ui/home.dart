@@ -1,4 +1,5 @@
 import 'package:first_bloc_project/features/home/bloc/home_bloc.dart';
+import 'package:first_bloc_project/features/home/ui/product_tile_widget.dart';
 import 'package:first_bloc_project/features/wishlist/ui/wishlist.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/framework.dart';
@@ -48,6 +49,7 @@ class _HomeState extends State<Home> {
             );
 
           case HomeLoadedSucessState:
+            final sucessState = (state as HomeLoadedSucessState);
             return Scaffold(
               appBar: AppBar(
                 backgroundColor: Colors.teal,
@@ -65,6 +67,12 @@ class _HomeState extends State<Home> {
                       icon: Icon(Icons.shopping_bag_rounded)),
                 ],
               ),
+              body: ListView.builder(
+                  itemCount: sucessState.products.length,
+                  itemBuilder: (context, index) {
+                    return ProductTile(
+                        productDataModel: sucessState.products[index]);
+                  }),
             );
 
           case HomeErrorState:
@@ -75,23 +83,3 @@ class _HomeState extends State<Home> {
     );
   }
 }
-
-
-        // return Scaffold(
-        //   appBar: AppBar(
-        //     backgroundColor: Colors.teal,
-        //     title: Text("Grocery App"),
-        //     actions: [
-        //       IconButton(
-        //           onPressed: () {
-        //             homeBloc.add(HomeWishlistButtonNavigateEvent());
-        //           },
-        //           icon: Icon(Icons.favorite_border)),
-        //       IconButton(
-        //           onPressed: () {
-        //             homeBloc.add(HomeCartButtonNavigateEvent());
-        //           },
-        //           icon: Icon(Icons.shopping_bag_rounded)),
-        //     ],
-        //   ),
-        // );
