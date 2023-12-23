@@ -1,4 +1,5 @@
 import 'package:first_bloc_project/features/home/bloc/home_bloc.dart';
+import 'package:first_bloc_project/features/wishlist/ui/wishlist.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/src/widgets/placeholder.dart';
@@ -14,6 +15,12 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
+  @override
+  void initState() {
+    homeBloc.add(HomeInitialEvent());
+    super.initState();
+  }
+
   final HomeBloc homeBloc = HomeBloc();
   @override
   Widget build(BuildContext context) {
@@ -26,26 +33,65 @@ class _HomeState extends State<Home> {
           Navigator.push(
               context, MaterialPageRoute(builder: (context) => Cart()));
         }
+        if (state is HomeNavigateToWishlistPageActionState) {
+          Navigator.push(
+              context, MaterialPageRoute(builder: (context) => Wishlist()));
+        }
       },
       builder: (context, state) {
-        return Scaffold(
-          appBar: AppBar(
-            title: Text("Grocery App"),
-            actions: [
-              IconButton(
-                  onPressed: () {
-                    homeBloc.add(HomeWishlistButtonNavigateEvent());
-                  },
-                  icon: Icon(Icons.favorite_border)),
-              IconButton(
-                  onPressed: () {
-                    homeBloc.add(HomeCartButtonNavigateEvent());
-                  },
-                  icon: Icon(Icons.shopping_bag_rounded)),
-            ],
-          ),
-        );
+        switch (state.runtimeType) {
+          case HomeLoadingState:
+            return Scaffold(
+              body: Center(
+                child: CircularProgressIndicator(),
+              ),
+            );
+
+          case HomeLoadedSucessState:
+            return Scaffold(
+              appBar: AppBar(
+                backgroundColor: Colors.teal,
+                title: Text("Grocery App"),
+                actions: [
+                  IconButton(
+                      onPressed: () {
+                        homeBloc.add(HomeWishlistButtonNavigateEvent());
+                      },
+                      icon: Icon(Icons.favorite_border)),
+                  IconButton(
+                      onPressed: () {
+                        homeBloc.add(HomeCartButtonNavigateEvent());
+                      },
+                      icon: Icon(Icons.shopping_bag_rounded)),
+                ],
+              ),
+            );
+
+          case HomeErrorState:
+          default:
+            return SizedBox();
+        }
       },
     );
   }
 }
+
+
+        // return Scaffold(
+        //   appBar: AppBar(
+        //     backgroundColor: Colors.teal,
+        //     title: Text("Grocery App"),
+        //     actions: [
+        //       IconButton(
+        //           onPressed: () {
+        //             homeBloc.add(HomeWishlistButtonNavigateEvent());
+        //           },
+        //           icon: Icon(Icons.favorite_border)),
+        //       IconButton(
+        //           onPressed: () {
+        //             homeBloc.add(HomeCartButtonNavigateEvent());
+        //           },
+        //           icon: Icon(Icons.shopping_bag_rounded)),
+        //     ],
+        //   ),
+        // );
